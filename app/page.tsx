@@ -1,22 +1,27 @@
 import TodaysChallenge from "@/components/welcome/TodaysChallenge";
-import FrameworkWheel from "@/components/welcome/FrameworkWheel";
+import FrameworkSpinner from "@/components/welcome/FrameworkSpinner";
 import CountdownTimer from "@/components/welcome/CountdownTimer";
 import Leaderboard from "@/components/welcome/Leaderboard";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1 className="text-4xl font-bold text-center">
-        Welcome to AgentChallenge.ai
-      </h1>
-      <TodaysChallenge />
-      <FrameworkWheel />
-      <CountdownTimer />
-      <Leaderboard />
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow flex justify-between p-8 pb-20 gap-16 sm:p-20 font-[family-name:Courier]">
+        <div className="flex-1 flex flex-col items-center gap-8">
+          <TodaysChallenge />
+          <FrameworkSpinner />
+        </div>
+        <div className="flex-1 flex flex-col items-center gap-8">
+          <CountdownTimer />
+          <Leaderboard />
+        </div>
+      </div>
+      <footer className="text-white text-center p-4">
+        <a href="https://dendrite.systems/" className="opacity-75">Made by dendrite.systems</a>
+      </footer>
     </div>
   );
 }
-
 
 
 
