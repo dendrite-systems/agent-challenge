@@ -50,7 +50,7 @@ export default function Leaderboard() {
 
     return (
         <div className="w-full max-w-2xl bg-gray-900 p-6 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Today's Leaderboard</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-white">Today&apos;s Leaderboard</h2>
             <table className="w-full">
                 <thead>
                     <tr className="bg-gray-800 text-gray-300">

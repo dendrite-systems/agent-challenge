@@ -51,7 +51,10 @@ let todaysChallenge:
   | { challenge: string; frameworkIndex: number; timestamp: number }
   | undefined = undefined;
 
-export default async function getChallenge(req, res) {
+export default async function getChallenge(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const now = new Date();
   const pstNow = new Date(
     now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })

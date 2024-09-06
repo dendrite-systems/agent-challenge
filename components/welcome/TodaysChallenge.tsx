@@ -34,7 +34,7 @@ export default function TodaysChallenge() {
     return (
         <div className="flex flex-col">
             <h1 className="text-4xl font-bold mb-4 text-center mb-8">
-                Today's Agent Challenge
+                Today&apos;s Agent Challenge
             </h1>
             <div className="bg-gray-900 p-6 rounded-lg shadow-md">
                 <div className="text-1xl whitespace-pre-wrap">
