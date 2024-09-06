@@ -48,9 +48,24 @@ There should three steps, use double line breaks to separate the steps and nice 
   return "Could not generate challenge today";
 };
 
+// let todaysChallenge:
+//   | { challenge: string; frameworkIndex: number; timestamp: number }
+//   | undefined = undefined;
+
+// Placeholder for now to prepare for demo
 let todaysChallenge:
   | { challenge: string; frameworkIndex: number; timestamp: number }
-  | undefined = undefined;
+  | undefined = {
+  challenge: `1. 🌐 Scrape the latest news articles from a specific industry or topic using a web scraping agent.
+
+
+2. 📝 Summarize the key points and trends from these articles using a natural language processing agent.
+
+
+3. 🐦 Generate and schedule social media posts highlighting the insights for a company's Twitter account.`,
+  frameworkIndex: 2,
+  timestamp: new Date().getTime(),
+};
 
 export default async function getChallenge(
   req: NextApiRequest,
