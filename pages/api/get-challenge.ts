@@ -1,5 +1,6 @@
 import { agentFrameworks } from "@/lib/common";
 import Anthropic from "@anthropic-ai/sdk";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const client = new Anthropic({
   apiKey: process.env["ANTHROPIC_API_KEY"],
