@@ -7,7 +7,7 @@ export default function FrameworkSpinner() {
     const [isSpinning, setIsSpinning] = useState(true);
     const [showResult, setShowResult] = useState(false);
     const [fetchedIndex, setFetchedIndex] = useState<number | null>(null);
-    const spinIntervalRef = useRef<NodeJS.Timer | null>(null);
+    const spinIntervalRef = useRef<number | null>(null);
     const startTimeRef = useRef(0);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function FrameworkSpinner() {
 
             setSelectedIndex(prev => (prev + 1) % agentFrameworks.length);
 
-            spinIntervalRef.current = setTimeout(spin, currentInterval);
+            spinIntervalRef.current = window.setTimeout(spin, currentInterval);
         };
 
         startTimeRef.current = Date.now();
