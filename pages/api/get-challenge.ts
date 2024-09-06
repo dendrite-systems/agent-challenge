@@ -63,7 +63,7 @@ let todaysChallenge:
 
 
 3. 🐦 Generate and schedule social media posts highlighting the insights for a company's Twitter account.`,
-  frameworkIndex: 2,
+  frameworkIndex: 1,
   timestamp: new Date().getTime(),
 };
 
