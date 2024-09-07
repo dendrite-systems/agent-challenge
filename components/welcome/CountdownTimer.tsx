@@ -1,6 +1,5 @@
 "use client";
 import { useCountdown } from "@/hooks/useCountdown";
-import { useState, useEffect } from "react";
 
 export default function CountdownTimer() {
   const timeLeft = useCountdown(6, 0);

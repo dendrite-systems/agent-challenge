@@ -1,27 +1,14 @@
 import { getRepos } from "@/lib/repositories/get";
-
-interface Submission {
-  user_id: string;
-  github_repo_url: string;
-  stars: number;
-  starred: boolean;
-}
+import { createClient } from "@/lib/supabase/server";
+// import { IconStar } from "@tabler/icons-react";
+// import { SubmitButton } from "../essentials/button/submit";
+// import { starRepo } from "@/lib/repositories/star";
 
 const Leaderboard = async () => {
-  const submissions = await getRepos();
-  console.log({submissions})
-  const handleStar = async (userId: string) => {
-    // Mock API call to star a solution
-    try {
-      await fetch("/api/star", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-    } catch (error) {
-      console.error("Error starring solution:", error);
-    }
-  };
+  const entries = await getRepos();
+  const supabase = createClient();
+  const user = (await supabase.auth.getUser()).data.user;
+  console.log({ entries });
 
   return (
     <div className="w-full max-w-2xl bg-gray-900 p-6 rounded-lg">
@@ -35,20 +22,20 @@ const Leaderboard = async () => {
             <th className="p-2 text-left">User</th>
             <th className="p-2 text-left">GitHub Repo</th>
             <th className="p-2 text-right">Stars</th>
-            <th className="p-2 text-center"></th>
+            {user && <th className="p-2 text-center">Star</th>}
           </tr>
         </thead>
         <tbody>
-          {submissions?.map((submission, index) => (
+          {entries?.map((entry, index) => (
             <tr
-              key={submission.id}
+              key={entry.id}
               className="border-b border-gray-700 text-gray-300"
             >
               <td className="p-2">{index + 1}</td>
-              <td className="p-2">{submission.uid}</td>
+              <td className="p-2">{entry.uid}</td>
               <td className="p-2">
                 <a
-                  href={submission.link}
+                  href={entry.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-400 hover:underline"
@@ -56,19 +43,24 @@ const Leaderboard = async () => {
                   View Repo
                 </a>
               </td>
-              <td className="p-2 text-right">{submission.stars}</td>
-              <td className="p-2 text-center">
-                {/* <button
-                  onClick={() => handleStar(submission.user_id)}
+              <td className="p-2 text-right">{entry.stars}</td>
+              {user && (
+                <td className="p-2 text-center">
+                  {/* <SubmitButton formAction={() => {starRepo(entry.id)}}>
+                    <IconStar />
+                  </SubmitButton> */}
+                  {/* <button
+                  onClick={() => handleStar(entry.user_id)}
                   className={`text-2xl ${
-                    submission.starred
+                    entry.starred
                       ? "opacity-100 hover:opacity-75"
                       : "opacity-50"
                   }`}
                 >
                   ⭐
                 </button> */}
-              </td>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
