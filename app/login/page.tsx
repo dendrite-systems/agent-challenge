@@ -7,8 +7,8 @@ import { IconBrandGithubFilled, IconBrandX } from "@tabler/icons-react";
 const Login = () => {
   const buttonClass = "bg-black text-white flex justify-center py-4";
   const supabase = createClient();
-  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
-  const redirectUrl = `http://${baseUrl}/api/auth/callback`
+  const baseUrl = "https://agent-challenge.vercel.app" //process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
+  const redirectUrl = `${baseUrl}/api/auth/callback`
   const githubLogin = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
