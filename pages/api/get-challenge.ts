@@ -62,7 +62,7 @@ let todaysChallenge:
 2. 📝 Summarize the key points and trends from these articles using a natural language processing agent.
 
 
-3. 🐦 Generate and schedule social media posts highlighting the insights for a company's Twitter account.`,
+3. 🐦 Generate a social media posts and save it to a Google Docs so it can be scheduled for publishing on Twitter.`,
   frameworkIndex: 1,
   timestamp: new Date().getTime(),
 };
