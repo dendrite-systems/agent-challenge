@@ -1,21 +1,22 @@
-"use client"
-import { useState, useEffect } from "react";
+'use client';
 
-export default function TodaysChallenge() {
+import { useState, useEffect } from 'react';
+import { getChallenge } from "@/lib/challenge";
+
+export default function ChallengeDescription() {
     const [challenge, setChallenge] = useState('');
     const [displayedChallenge, setDisplayedChallenge] = useState('');
 
     useEffect(() => {
-        const fetchChallenge = async () => {
+        async function fetchChallenge() {
             try {
-                const response = await fetch('/api/get-challenge');
-                const data = await response.json();
+                const data = await getChallenge();
                 setChallenge(data.challenge);
             } catch (error) {
                 console.error('Error fetching challenge:', error);
                 setChallenge('Failed to load challenge. Please try again later.');
             }
-        };
+        }
         fetchChallenge();
     }, []);
 
@@ -39,11 +40,6 @@ export default function TodaysChallenge() {
             <div className="bg-gray-900 p-6 rounded-lg shadow-md">
                 <div className="text-1xl whitespace-pre-wrap">
                     {displayedChallenge}
-                </div>
-            </div>
-            <div className="bg-gray-900 p-2 rounded-lg shadow-md mt-8">
-                <div className="whitespace-pre-wrap opacity-75">
-                    Psst... Use <a href="https://github.com/dendrite-systems/dendrite-python-sdk" className="text-blue-400 hover:text-blue-300 underline font-semibold">Dendrite SDK</a> for easy web interactions for your agent ;)
                 </div>
             </div>
         </div>

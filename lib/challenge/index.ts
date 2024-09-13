@@ -1,6 +1,8 @@
+"use server";
+
 import { agentFrameworks } from "@/lib/common";
 import Anthropic from "@anthropic-ai/sdk";
-import { NextApiRequest, NextApiResponse } from "next";
+import { createClient } from "../supabase/server";
 
 const client = new Anthropic({
   apiKey: process.env["ANTHROPIC_API_KEY"],
@@ -41,36 +43,27 @@ There should three steps, use double line breaks to separate the steps and nice 
     model: "claude-3-5-sonnet-20240620",
   });
 
+  let challengeText = "Could not generate challenge today";
   if (message.content[0].type === "text") {
-    return message.content[0].text;
+    challengeText = message.content[0].text;
   }
 
-  return "Could not generate challenge today";
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("challenge")
+    .insert({ challenge: challengeText })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error storing challenge:", error);
+    return challengeText;
+  }
+
+  return data.challenge;
 };
 
-// let todaysChallenge:
-//   | { challenge: string; frameworkIndex: number; timestamp: number }
-//   | undefined = undefined;
-
-// Placeholder for now to prepare for demo
-let todaysChallenge:
-  | { challenge: string; frameworkIndex: number; timestamp: number }
-  | undefined = {
-  challenge: `1. 🌐 Scrape the latest news articles from a specific industry or topic using a web scraping agent.
-
-
-2. 📝 Summarize the key points and trends from these articles using a natural language processing agent.
-
-
-3. 🐦 Generate a social media posts and save it to a Google Docs so it can be scheduled for publishing on Twitter.`,
-  frameworkIndex: 1,
-  timestamp: new Date().getTime(),
-};
-
-export default async function getChallenge(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function getChallenge() {
   const now = new Date();
   const pstNow = new Date(
     now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
@@ -78,48 +71,39 @@ export default async function getChallenge(
   const sixAMPST = new Date(pstNow);
   sixAMPST.setHours(6, 0, 0, 0);
 
-  console.log(`Current time (PST): ${pstNow.toLocaleString()}`);
-  console.log(`6AM PST: ${sixAMPST.toLocaleString()}`);
-
-  if (!todaysChallenge) {
-    console.log("No challenge cached. Generating new challenge.");
-  } else if (
-    pstNow >= sixAMPST &&
-    todaysChallenge.timestamp < sixAMPST.getTime()
-  ) {
-    console.log(
-      "It's past 6AM PST and the cached challenge is old. Generating new challenge."
-    );
-  } else {
-    console.log("Using cached challenge.");
-    console.log(
-      `Cached challenge timestamp: ${new Date(
-        todaysChallenge.timestamp
-      ).toLocaleString()}`
-    );
-  }
+  const supabase = createClient();
+  const { data: latestChallenge } = await supabase
+    .from("challenge")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
 
   if (
-    !todaysChallenge ||
-    (pstNow >= sixAMPST && todaysChallenge.timestamp < sixAMPST.getTime())
+    !latestChallenge ||
+    (pstNow >= sixAMPST && latestChallenge.created_at < sixAMPST.getTime())
   ) {
     const challenge = await generateChallenge();
     const frameworkIndex = Math.floor(Math.random() * agentFrameworks.length);
-    todaysChallenge = {
-      challenge: challenge || "",
-      frameworkIndex,
-      timestamp: pstNow.getTime(),
-    };
-    console.log("New challenge generated and cached.");
-    console.log(
-      `New challenge timestamp: ${new Date(
-        todaysChallenge.timestamp
-      ).toLocaleString()}`
-    );
+    return { challenge, frameworkIndex };
   }
 
-  res.status(200).json({
-    challenge: todaysChallenge.challenge,
-    frameworkIndex: todaysChallenge.frameworkIndex,
-  });
+  return {
+    challenge: latestChallenge.challenge,
+    frameworkIndex: Math.floor(Math.random() * agentFrameworks.length),
+  };
 }
+
+// Add this function
+async function initializeChallenge() {
+  const supabase = createClient();
+  const { data } = await supabase.from("challenge").select("*").limit(1);
+
+  if (!data || data.length === 0) {
+    await generateChallenge();
+  }
+}
+
+// Call this function when your application starts
+// For example, in your main server file or in a startup script
+initializeChallenge().catch(console.error);
