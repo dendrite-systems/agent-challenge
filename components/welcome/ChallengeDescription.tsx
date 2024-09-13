@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getChallenge } from "@/lib/challenge";
 
 export default function ChallengeDescription() {
     const [challenge, setChallenge] = useState('');
@@ -10,11 +9,15 @@ export default function ChallengeDescription() {
     useEffect(() => {
         async function fetchChallenge() {
             try {
-                const data = await getChallenge();
-                if (data) {
+                const response = await fetch('/api/challenge');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data && data.challenge) {
                     setChallenge(data.challenge);
                 } else {
-                    throw new Error('No data received');
+                    throw new Error('No challenge data received');
                 }
             } catch (error) {
                 console.error('Error fetching challenge:', error);
