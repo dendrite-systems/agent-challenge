@@ -9,3 +9,6 @@ export const generateInt8Id = () => {
 
   return randomInt8;
 };
+
+export const isProduction = () =>
+  process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
