@@ -2,18 +2,29 @@
 
 import { agentFrameworks } from "@/lib/common";
 import Anthropic from "@anthropic-ai/sdk";
-import { createClient } from "../supabase/server";
+import { createAdminClient } from "../supabase/server";
 
 const client = new Anthropic({
   apiKey: process.env["ANTHROPIC_API_KEY"],
 });
 
 const generateChallenge = async () => {
+  const supabase = createAdminClient();
+  const { data: recentChallenges } = await supabase
+    .from("challenge")
+    .select("challenge")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  const recentChallengesText = recentChallenges
+    ?.map((c, i) => `${i + 1}. ${c.challenge}`)
+    .join("\n\n");
+
   const prompt = `You are the game leader of a game called "AgentChallenge.ai". 
   
 Your goal is to come up with an interesting daily challenge for developers to build that involves using AI agents to automate some process.
 
-Please list a few ideas for agent workflows that should adress some common and tedious automation process.
+Please list a few ideas for agent workflows that should address some common and tedious automation process.
 
 Please give some practical examples, e.g:
 
@@ -33,6 +44,12 @@ The examples should be easy for any developer to use (they shouldn't need to spe
 
 Use the web in your examples.
 
+Here are the 10 most recent challenges:
+
+${recentChallengesText}
+
+Please create a new challenge that is different from these recent ones. Make sure it's novel and unique.
+
 Output one example as a numbered list and nothing else. Don't write anything else besides the list.
 
 There should three steps, use double line breaks to separate the steps and nice emojis.`;
@@ -44,23 +61,26 @@ There should three steps, use double line breaks to separate the steps and nice 
   });
 
   let challengeText = "Could not generate challenge today";
+  let frameworkName = "";
   if (message.content[0].type === "text") {
     challengeText = message.content[0].text;
+    // Randomly select a framework
+    frameworkName =
+      agentFrameworks[Math.floor(Math.random() * agentFrameworks.length)].name;
   }
 
-  const supabase = createClient();
   const { data, error } = await supabase
     .from("challenge")
-    .insert({ challenge: challengeText })
+    .insert({ challenge: challengeText, framework_name: frameworkName })
     .select()
     .single();
 
   if (error) {
     console.error("Error storing challenge:", error);
-    return challengeText;
+    return { challenge: challengeText, frameworkName };
   }
 
-  return data.challenge;
+  return { challenge: data.challenge, frameworkName: data.framework_name };
 };
 
 export async function getChallenge() {
@@ -71,7 +91,7 @@ export async function getChallenge() {
   const sixAMPST = new Date(pstNow);
   sixAMPST.setHours(6, 0, 0, 0);
 
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data: latestChallenge } = await supabase
     .from("challenge")
     .select("*")
@@ -83,27 +103,12 @@ export async function getChallenge() {
     !latestChallenge ||
     (pstNow >= sixAMPST && latestChallenge.created_at < sixAMPST.getTime())
   ) {
-    const challenge = await generateChallenge();
-    const frameworkIndex = Math.floor(Math.random() * agentFrameworks.length);
-    return { challenge, frameworkIndex };
+    const { challenge, frameworkName } = await generateChallenge();
+    return { challenge, frameworkName };
   }
 
   return {
     challenge: latestChallenge.challenge,
-    frameworkIndex: Math.floor(Math.random() * agentFrameworks.length),
+    frameworkName: latestChallenge.framework_name,
   };
 }
-
-// Add this function
-async function initializeChallenge() {
-  const supabase = createClient();
-  const { data } = await supabase.from("challenge").select("*").limit(1);
-
-  if (!data || data.length === 0) {
-    await generateChallenge();
-  }
-}
-
-// Call this function when your application starts
-// For example, in your main server file or in a startup script
-initializeChallenge().catch(console.error);

@@ -1,8 +1,5 @@
 import { getRepos } from "@/lib/repositories/get";
 import { createClient } from "@/lib/supabase/server";
-import { SubmitButton } from "../../essentials/button/submit";
-import { IconStar } from "@tabler/icons-react";
-import { starRepo } from "@/lib/repositories/star";
 import StarButton from "./star-button";
 // import { IconStar } from "@tabler/icons-react";
 // import { SubmitButton } from "../essentials/button/submit";

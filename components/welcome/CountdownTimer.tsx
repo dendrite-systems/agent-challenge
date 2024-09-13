@@ -7,7 +7,7 @@ export default function CountdownTimer() {
 
     return (
         <div className="text-center">
-            <h3 className="text-2xl font-semibold mb-4 text-white">
+            <h3 className="text-xl font-semibold mb-4 text-gray-200">
                 Next Challenge In:
             </h3>
             <div className="flex justify-center space-x-4">

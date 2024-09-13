@@ -1,13 +1,16 @@
-import ChallengeDescription from "@/components/welcome/ChallengeDescription";
 import FrameworkSpinner from "@/components/welcome/FrameworkSpinner";
 import CountdownTimer from "@/components/welcome/CountdownTimer";
 import Leaderboard from "@/components/welcome/leaderboard";
 import { Metadata } from "next";
+import ChallengeDescription from "@/components/welcome/ChallengeDescription";
 
 export const metadata: Metadata = {
   title: "Agent challenge",
   description:
     "Every week, a new AI agent challenge is generated. Our goal is to accelerate the AI agent dev community, globally.",
+  icons: [
+    { rel: 'icon', url: '/favicon.ico' },
+  ],
 };
 
 export default function Home() {
