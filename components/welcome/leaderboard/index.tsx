@@ -1,5 +1,9 @@
 import { getRepos } from "@/lib/repositories/get";
 import { createClient } from "@/lib/supabase/server";
+import { SubmitButton } from "../../essentials/button/submit";
+import { IconStar } from "@tabler/icons-react";
+import { starRepo } from "@/lib/repositories/star";
+import StarButton from "./star-button";
 // import { IconStar } from "@tabler/icons-react";
 // import { SubmitButton } from "../essentials/button/submit";
 // import { starRepo } from "@/lib/repositories/star";
@@ -46,9 +50,7 @@ const Leaderboard = async () => {
               <td className="p-2 text-right">{entry.stars}</td>
               {user && (
                 <td className="p-2 text-center">
-                  {/* <SubmitButton formAction={() => {starRepo(entry.id)}}>
-                    <IconStar />
-                  </SubmitButton> */}
+                  <StarButton entryId={entry.id.toString()} />
                   {/* <button
                   onClick={() => handleStar(entry.user_id)}
                   className={`text-2xl ${

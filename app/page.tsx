@@ -1,7 +1,14 @@
 import TodaysChallenge from "@/components/welcome/TodaysChallenge";
 import FrameworkSpinner from "@/components/welcome/FrameworkSpinner";
 import CountdownTimer from "@/components/welcome/CountdownTimer";
-import Leaderboard from "@/components/welcome/Leaderboard";
+import Leaderboard from "@/components/welcome/leaderboard";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Agent challenge",
+  description:
+    "Every week, a new AI agent challenge is generated. Our goal is to accelerate the AI agent dev community, globally.",
+};
 
 export default function Home() {
   return (
@@ -17,13 +24,10 @@ export default function Home() {
         </div>
       </div>
       <footer className="text-white text-center p-4">
-        <a href="https://dendrite.systems/" className="opacity-75">Made by dendrite.systems</a>
+        <a href="https://dendrite.systems/" className="opacity-75">
+          Made by dendrite.systems
+        </a>
       </footer>
     </div>
   );
 }
-
-
-
-
-
